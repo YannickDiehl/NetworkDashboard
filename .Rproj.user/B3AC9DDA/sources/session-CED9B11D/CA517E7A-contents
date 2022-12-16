@@ -1,0 +1,99 @@
+library(shiny)
+library(tidyverse)
+library(igraph)
+library(qgraph)
+source("helpers.R")
+
+
+ui <- fluidPage(
+  
+    # Application title
+    titlePanel("Network model simulation"),
+
+    # Sidebar with a slider input
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(
+              "n_vertices",
+              "Vertices:",
+              min = 1,
+              max = 30,
+              value = 10,
+              animate = T,
+              ticks = T
+              ),
+            
+            sliderInput(
+              "edge_prob",
+              "Probability:",
+              min = 0,
+              max = 1,
+              value = 0.3,
+              step = 0.05,
+              animate = T,
+              ticks = T
+            ),
+            
+            fluidRow(
+            actionButton(
+              "update",
+              "New Network", 
+              icon("refresh"), 
+              class = "btn btn-primary"
+              ),
+            actionButton(
+              "reset_input", 
+              "Reset inputs"
+              )
+            )
+        ),
+
+        # Show a plot of the generated network
+        mainPanel(
+          
+          fluidRow(
+            splitLayout(
+              cellWidths = c("50%", "50%"),
+              plotOutput("networkPlot", width = "100%", height = 600),
+              helpText(
+                "Descriptive Statistics", 
+                withMathJax("$$X_n=X_{n-1}-\\varepsilon$$")
+                )
+              )
+             )
+
+           
+           )
+        )
+    )
+
+server <- function(input, output) {
+  
+  observeEvent(input$reset_input, {
+    updateSliderInput(inputId = "n_vertices", value = 10)
+    updateSliderInput(inputId = "edge_prob", value = .3)
+  })
+  
+  network_matrix <- reactive({
+    input$update
+    generate.network(
+      n = input$n_vertices,
+      p = input$edge_prob
+      )
+    })
+  
+  output$networkPlot <- renderPlot({
+    qgraph(network_matrix())
+  })
+  
+
+  
+  output$networkFreq <- renderPlot({
+      
+      
+      
+    })
+
+}
+
+shinyApp(ui = ui, server = server)

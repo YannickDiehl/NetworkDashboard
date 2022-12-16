@@ -1,0 +1,18 @@
+g <- make_ring(10)
+g %>% plot()
+degree(g)
+
+
+network_matrix <- generate.network(
+  n = 10,
+  p = .3
+)
+
+network_matrix %>% as_tibble() %>% rename_with(~ seq_along(1:10), everything())
+qgraph(network_matrix)
+
+k <- colSums(network_matrix) 
+
+k[k == 3] %>% length()
+
+graph_from_adjacency_matrix(network_matrix, mode = "undirected") %>% plot()
