@@ -11,7 +11,7 @@ shinyUI(
       HTML("div.MathJax_Display{
       text-align: left !important;}")
       )),
-
+    
     withMathJax(),
     
     # Application title
@@ -64,21 +64,12 @@ shinyUI(
         
         uiOutput("select_var1"),
         
-        # selectInput(
-        #   inputId = "var_select1",
-        #   label = "Variable:",
-        #   choices = n_global,
-        #   selected = 1,
-        # ),
-        
-        uiOutput("test"),
-        
+        uiOutput("select_var2"),
         
         checkboxInput(
-          inputId = "BFS", 
+          inputId = "bfs_check", 
           label = "Show BFS", 
-          value = FALSE, 
-          width = NULL
+          value = T
         )
         
       )),

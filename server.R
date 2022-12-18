@@ -19,9 +19,17 @@ shinyServer(
     output$select_var1 <- renderUI({
     selectInput(
       inputId = "var_select1",
-      label = "Variable:",
+      label = "Starting Variable:",
       choices = 1:N()
     )
+    })
+    
+    output$select_var2 <- renderUI({
+      selectInput(
+        inputId = "var_select2",
+        label = "Ending Variable (optional):",
+        choices = 1:N()
+      )
     })
     
     network_matrix <- reactive({
@@ -44,7 +52,7 @@ shinyServer(
     
     output$networkPlot <- renderPlot({
       
-      if (input$BFS == T) {
+      if (input$bfs_check == T) {
         qgraph(network_matrix(), groups = as_factor(bfs_vector()), theme = "colorblind")
         
       } else {
@@ -55,12 +63,13 @@ shinyServer(
     
     
     output$ledgend <- renderUI({fluidPage(
-      h5(strong("Legend")),
-      paste("$$N~=~overall~number~of~nodes$$"),
-      paste("$$L~=~overall~number~of~links$$"),
-      withMathJax("$$k~=~number~of~links~from~one~node~to~other~nodes~(degree)$$"),
-      paste("$$\\langle k \\rangle~=~average~degree$$"),
-      paste("$$p_k~=~probability~that~a~randomly~selected~node~in~the~network~has~degree~k$$")
+      h5(HTML("<strong> Legend </strong>")), 
+      HTML("<p> N = overall number of nodes </p>"),
+      HTML("<p> L = overall number of links </p>"),
+      HTML("<p> k = number of links from one node to other nodes (degree) </p>"),
+      HTML("<p> \u27E8k\u27E9 = average degree </p>"),
+      HTML("<p> p<sub>k</sub> = probability that a randomly selected node in the network has degree k </p>"),
+      HTML("<p> BFS = Breadth-First Search Algorithm </p>")
     )})
     
     
@@ -70,7 +79,8 @@ shinyServer(
       withMathJax("$$L_{max}=\\frac{N(N-1)}{2}=", (N()*(N()-1))/2, "$$"),
       withMathJax("$$L=\\frac{1}{2}\\sum_{i=1}^{N}k_i=", L(), "$$"),
       withMathJax("$$\\langle k \\rangle=\\frac{1}{N}\\sum_{i=1}^{N}k_i=\\frac{2L}{N}=", k_mean(), "$$"),
-      withMathJax("$$p_k=\\frac{N_k}{N};~", "e.g.~p_1=", length(k()[k()==1])/N(), "$$")
+      withMathJax("$$p_k=\\frac{N_k}{N};~", "e.g.~p_1=", length(k()[k()==1])/N(), "$$"),
+      withMathJax("$$d_max~=")
     )})
     
     output$degree_distribution <- renderPlot({
