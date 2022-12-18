@@ -20,7 +20,8 @@ shinyServer(
     selectInput(
       inputId = "var_select1",
       label = "Starting Variable:",
-      choices = 1:N()
+      choices = 1:N(),
+      selected = 1
     )
     })
     
@@ -46,14 +47,21 @@ shinyServer(
     
     k_mean <- reactive((2*L())/N())
     
-    var_1 <- reactive(input$var_select1)
-
-    bfs_vector <- reactive(bfs(network_matrix(), as.numeric(var_1())))
+    var_1 <- reactive(input$var_select1 %>% as.numeric())
+    
+    var_2 <- reactive(input$var_select2 %>% as.numeric())
+    
+    bfs_df <- reactive(map_dfr(set_names(1:N()), ~ bfs(network_matrix(), .x)))
+    
+    bfs_vec <- reactive(flatten_dbl(bfs_df())[is.finite(flatten_dbl(bfs_df()))])
     
     output$networkPlot <- renderPlot({
       
       if (input$bfs_check == T) {
-        qgraph(network_matrix(), groups = as_factor(bfs_vector()), theme = "colorblind")
+        qgraph(
+          network_matrix(), 
+          groups = as.factor(bfs_df()[[var_1()]]),
+          theme = "colorblind")
         
       } else {
         qgraph(network_matrix())
@@ -69,18 +77,27 @@ shinyServer(
       HTML("<p> k = number of links from one node to other nodes (degree) </p>"),
       HTML("<p> \u27E8k\u27E9 = average degree </p>"),
       HTML("<p> p<sub>k</sub> = probability that a randomly selected node in the network has degree k </p>"),
-      HTML("<p> BFS = Breadth-First Search Algorithm </p>")
+      HTML("<p> BFS = Breadth-First Search Algorithm </p>"),
+      HTML("<p> d<sub>max</sub> = longest shortest path between two nodes (diameter)"),
+      HTML("<p> d<sub>ij</sub> = shortest path between nodes i and j"),
+      HTML("<p> \u27E8d\u27E9 = average Path Length")
     )})
     
     
     output$global_prop <- renderUI({fluidPage(
-      h5(strong("Global properties")),
+      h5(HTML("<strong>Global properties </strong>")),
       withMathJax("$$N=", N(), "$$"),
       withMathJax("$$L_{max}=\\frac{N(N-1)}{2}=", (N()*(N()-1))/2, "$$"),
       withMathJax("$$L=\\frac{1}{2}\\sum_{i=1}^{N}k_i=", L(), "$$"),
       withMathJax("$$\\langle k \\rangle=\\frac{1}{N}\\sum_{i=1}^{N}k_i=\\frac{2L}{N}=", k_mean(), "$$"),
       withMathJax("$$p_k=\\frac{N_k}{N};~", "e.g.~p_1=", length(k()[k()==1])/N(), "$$"),
-      withMathJax("$$d_max~=")
+      withMathJax("$$d_{max}~=~", max(bfs_vec()), "$$"),
+      withMathJax("$$\\langle d \\rangle~=~\\frac{\\sum_{i \\neq j}d(i,j)}{N(N-1)}=", round(sum(bfs_vec())/(N()*(N()-1)),3), "$$")
+    )})
+    
+    output$local_prop <- renderUI({fluidPage(
+      h5(HTML("<strong>Local properties</strong>")),
+      withMathJax("$$d_{ij}=", bfs_df()[var_1(), var_2()], "$$")
     )})
     
     output$degree_distribution <- renderPlot({

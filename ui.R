@@ -20,7 +20,9 @@ shinyUI(
     # Sidebar with a slider input
     fluidRow(
       
-      column(3, wellPanel(
+      column(3, 
+             
+      wellPanel(
         
         sliderInput(
           inputId = "n_vertices",
@@ -70,9 +72,16 @@ shinyUI(
           inputId = "bfs_check", 
           label = "Show BFS", 
           value = T
-        )
+          )
+        ),
         
-      )),
+      wellPanel(
+        
+        uiOutput("local_prop")
+        
+      )
+        
+      ),
       
       # Show a plot of the generated network
       column(6,
