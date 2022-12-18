@@ -1,8 +1,0 @@
-network_matrix <- generate.network(
-  n = 10,
-  p = 0.3
-)
-
-qgraph(network_matrix)
-
-network_matrix

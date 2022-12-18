@@ -15,7 +15,7 @@ shinyUI(
     withMathJax(),
     
     # Application title
-    titlePanel("Undirected network model simulation"),
+    titlePanel("Random undirected network model simulation"),
     
     # Sidebar with a slider input
     fluidRow(
@@ -38,7 +38,7 @@ shinyUI(
           min = 0,
           max = 1,
           value = 0.3,
-          step = 0.05,
+          step = 0.025,
           animate = T,
           ticks = T
         ),
@@ -57,6 +57,30 @@ shinyUI(
             label = "Reset inputs"
           )
         )
+        
+      ),
+      
+      wellPanel(
+        
+        uiOutput("select_var1"),
+        
+        # selectInput(
+        #   inputId = "var_select1",
+        #   label = "Variable:",
+        #   choices = n_global,
+        #   selected = 1,
+        # ),
+        
+        uiOutput("test"),
+        
+        
+        checkboxInput(
+          inputId = "BFS", 
+          label = "Show BFS", 
+          value = FALSE, 
+          width = NULL
+        )
+        
       )),
       
       # Show a plot of the generated network

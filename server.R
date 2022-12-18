@@ -14,7 +14,15 @@ shinyServer(
       updateSliderInput(inputId = "edge_prob", value = .3)
     })
     
-    N <- reactive({input$n_vertices})
+    N <- reactive(input$n_vertices)
+    
+    output$select_var1 <- renderUI({
+    selectInput(
+      inputId = "var_select1",
+      label = "Variable:",
+      choices = 1:N()
+    )
+    })
     
     network_matrix <- reactive({
       input$update
@@ -24,20 +32,25 @@ shinyServer(
       ) 
     })
     
-    k <- reactive({
-      colSums(network_matrix())
-    })
+    k <- reactive(colSums(network_matrix()))
     
-    L <- reactive({
-      sum(k())/2
-    })
+    L <- reactive(sum(k())/2)
     
-    k_mean <- reactive({
-      (2*L())/N()
-    })
+    k_mean <- reactive((2*L())/N())
+    
+    var_1 <- reactive(input$var_select1)
+
+    bfs_vector <- reactive(bfs(network_matrix(), as.numeric(var_1())))
     
     output$networkPlot <- renderPlot({
-      qgraph(network_matrix())
+      
+      if (input$BFS == T) {
+        qgraph(network_matrix(), groups = as_factor(bfs_vector()), theme = "colorblind")
+        
+      } else {
+        qgraph(network_matrix())
+        
+      }
     })
     
     
@@ -45,7 +58,7 @@ shinyServer(
       h5(strong("Legend")),
       paste("$$N~=~overall~number~of~nodes$$"),
       paste("$$L~=~overall~number~of~links$$"),
-      paste("$$k~(degree)~=~number~of~links~from~one~node~to~other~nodes$$"),
+      withMathJax("$$k~=~number~of~links~from~one~node~to~other~nodes~(degree)$$"),
       paste("$$\\langle k \\rangle~=~average~degree$$"),
       paste("$$p_k~=~probability~that~a~randomly~selected~node~in~the~network~has~degree~k$$")
     )})
@@ -74,7 +87,7 @@ shinyServer(
       digits = 0, colnames = T, rownames = T, width = "100%", bordered = T,
       align = "c", stripped = T,{
       network_matrix() %>% 
-          as_tibble() %>% 
+          as.data.frame() %>% 
           rename_with(~ str_replace(.x, "V", "N"), everything())
     })
 
