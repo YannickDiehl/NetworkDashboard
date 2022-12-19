@@ -15,7 +15,7 @@ shinyUI(
     withMathJax(),
     
     # Application title
-    titlePanel("Random undirected network model simulation"),
+    titlePanel("Random network simulation"),
     
     # Sidebar with a slider input
     fluidRow(
@@ -28,9 +28,9 @@ shinyUI(
           inputId = "n_vertices",
           label = "Nodes:",
           min = 0,
-          max = 20,
+          max = 30,
           value = 10,
-          animate = T,
+          animate = animationOptions(interval = 3000),
           ticks = T
         ),
         
@@ -41,7 +41,7 @@ shinyUI(
           max = 1,
           value = 0.3,
           step = 0.025,
-          animate = T,
+          animate = animationOptions(interval = 3000),
           ticks = T
         ),
         
@@ -73,11 +73,16 @@ shinyUI(
           label = "Show BFS", 
           value = T
           )
-        ),
         
+        ),
+      
+      wellPanel(
+        uiOutput("local_prop")
+      ),
+      
       wellPanel(
         
-        uiOutput("local_prop")
+        uiOutput("components")
         
       )
         
@@ -93,35 +98,55 @@ shinyUI(
       # Descriptives
       column(3, 
              
-        wellPanel(
-          
-          uiOutput("ledgend"),
-        
-        ),
+       wellPanel(
+         uiOutput("legend"),
+       ),
         
         wellPanel(
           uiOutput("global_prop")
-        
         ))
       ),
     
     fluidRow(
       
-      column(9,
-        
-        headerPanel(h5("Adjacency matrix")),
-        wellPanel(
-          tableOutput("adjacency_matrix")
-        )
+      column(3,
+             
+        plotOutput("degree_distribution")
         
        ),
       
       column(3,
              
-         plotOutput("degree_distribution")
+         plotOutput("centrality")
              
-        )
+      ),
       
+      column(3,
+             
+          plotOutput("distance_distribution")
+             
+      ),
+      
+      column(3,
+             
+          plotOutput("clustering")
+             
+      )
+      
+      
+    ),
+    
+    fluidRow(
+      
+      column(12,
+             
+         headerPanel(h5("Adjacency matrix")),
+         wellPanel(
+           tableOutput("adjacency_matrix")
+         ) 
+             
+             
+      )
       
     )
     )

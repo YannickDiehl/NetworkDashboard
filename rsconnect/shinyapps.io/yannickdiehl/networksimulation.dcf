@@ -5,7 +5,7 @@ account: yannickdiehl
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7904399
-bundleId: 6650544
+bundleId: 6651364
 url: https://yannickdiehl.shinyapps.io/networksimulation/
-when: 1671372634.75746
-lastSyncTime: 1671372634.75747
+when: 1671404967.50524
+lastSyncTime: 1671404967.50525

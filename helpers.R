@@ -1,4 +1,5 @@
-generate.network = function(n, p) {
+# Generate Network
+generate_network = function(n, p) {
   
   # Calculate number of possible edges
   L <- n * (n-1)/2
@@ -21,6 +22,8 @@ generate.network = function(n, p) {
   return(networkmat)
 }
 
+
+# Breadth-First Search Algorithm
 bfs <- function(graph, start){
   
   # A Queue to manage the nodes that have yet to be visited, intialized with the start node
@@ -40,23 +43,27 @@ bfs <- function(graph, start){
   
   # While there are nodes left to visit...
   while(length(queue) > 0) {
-    # cat("Visited nodes: ", visited, "\n")
-    # cat("Distances: ", distances, "\n")
+    
     node = queue[1] # get...
     queue = queue[-1] # ...and remove next node
-    # cat("Removing node ", node, " from the queue...", "\n")
-    # ...for all neighboring nodes that haven't been visited yet....
+    
     for(i in seq_along(graph[node,])) {
+      
       if(graph[node,i] && !visited[i]){
-        # Do whatever you want to do with the node here.
-        # Visit it, set the distance and add it to the queue
+        
         visited[i] = TRUE
         distances[i] = distances[node] + 1
         queue = c(queue, i)
-        # cat("Visiting node ", i, ", setting its distance to ", distances[i], " and adding it to the queue", "\n")
+        
       }
     }
   }
-  # cat("No more nodes in the queue. Distances: ", distances, "\n")
+  
   return (distances)
+  
 }
+
+
+
+
+
