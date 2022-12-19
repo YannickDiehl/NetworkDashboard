@@ -141,6 +141,7 @@ shinyServer(
       as_tibble(k()) %>% 
         ggplot(aes(x = value)) +
         geom_bar(aes(x = value, y=..prop..), stat="count", fill = "steelblue") +
+        geom_vline(xintercept = k_mean(), linetype = "dashed") +
         # ggtitle("Degree Distribution") +
         xlab("degree (k)") +
         ylab(bquote('probability of k ('*~p[k]*')')) +

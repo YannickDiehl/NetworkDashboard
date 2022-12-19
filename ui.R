@@ -91,7 +91,7 @@ shinyUI(
       # Show a plot of the generated network
       column(6,
              
-        plotOutput("networkPlot", width = "100%", height = 600)
+        plotOutput("networkPlot", width = "100%", height = 1200)
           
           ),
       
