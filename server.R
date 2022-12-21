@@ -118,7 +118,7 @@ shinyServer(
       withMathJax("$$k_i=", k()[var_1()], "$$"),
       withMathJax("$$d_{ij}=", bfs_df()[var_1(), var_2()], "$$"),
       withMathJax("$$C_{Bi}=\\frac{1}{\\sum_{j=1}^{N}d_{ij}}=", round(1/sum(bfs_df()[var_1()]),3),"$$"),
-      withMathJax("$$B_i=\\sum_{<j,k>}\\frac{d_{jk}~through~i}{d_{jk}}=", round(betweenness(igraph(), var_1(), directed = F),3), "$$"),
+      withMathJax("$$B_i=\\sum_{<j,k>}\\frac{d_{jk}(i)}{d_{jk}}=", round(betweenness(igraph(), var_1(), directed = F),3), "$$"),
       withMathJax("$$C_i=\\frac{2L_i}{k_i(k_i-1)}=", round(transitivity(igraph(), type = "localundirected")[var_1()], 3), "$$")
     )})
     
@@ -140,7 +140,7 @@ shinyServer(
     output$degree_distribution <- renderPlot({
       as_tibble(k()) %>% 
         ggplot(aes(x = value)) +
-        geom_bar(aes(x = value, y=..prop..), stat="count", fill = "steelblue") +
+        geom_bar(aes(x = value, y=after_stat(prop)), stat="count", fill = "steelblue") +
         geom_vline(xintercept = k_mean(), linetype = "dashed") +
         # ggtitle("Degree Distribution") +
         xlab("degree (k)") +
@@ -152,7 +152,7 @@ shinyServer(
     output$distance_distribution <- renderPlot({
       as_tibble(bfs_vec()) %>% 
         ggplot(aes(x = value)) +
-        # geom_bar(aes(x = value, y=..prop..), stat="count", fill = "steelblue") +
+        # geom_bar(aes(x = value, y=after_stat(prop)), stat="count", fill = "steelblue") +
         geom_density(adjust = 2, color = "steelblue") +
         geom_vline(xintercept = d_mean(), linetype = "dashed") +
         # ggtitle("Distance Distribution") +
@@ -169,7 +169,7 @@ shinyServer(
     
     
     output$clustering <- renderPlot({
-      clusteringPlot(network_matrix())
+      clusteringPlot(network_matrix()) 
     })
     
     output$adjacency_matrix <- renderTable(

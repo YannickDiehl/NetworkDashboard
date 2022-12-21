@@ -1,11 +1,11 @@
-graph <- generate.network(20, .1)
+graph <- generate_network(20, .1)
 
 qgraph(graph)
 
 colSums(graph)
 
 centralityPlot(graph, include = c("Degree","Strength", "Closeness","Betweenness"))
-clusteringPlot(graph)
+a <- clusteringPlot(graph)
 
 y <- bfs(graph, 2)
 
