@@ -9,6 +9,7 @@ a <- clusteringPlot(graph)
 
 y <- bfs(graph, 2)
 
+a
 x <- map_dfr(set_names(1:10), ~ bfs(graph, .x))
 
 flatten_dbl(x) %>% is.infinite() %>% any()
